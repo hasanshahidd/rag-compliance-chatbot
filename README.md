@@ -46,7 +46,17 @@ rag_compliance_chatbot/
   <li>Gap analysis report generation (Markdown)</li>
   <li>Streamlit UI for interactive queries & reports</li>
 </ul>
+<hr>
 
+<h2>📊 System Architecture</h2>
+
+<p align="center">
+  <img src="https://github.com/hasanshahidd/rag-compliance-chatbot/blob/main/diagram1.png" alt="RAG Compliance Chatbot Architecture" width="80%">
+</p>
+
+<p align="center"><em>Figure: End-to-end workflow of the RAG Compliance Chatbot from PDF ingestion and chunking to FAISS retrieval, LLM query answering, compliance gap analysis, and Streamlit UI.</em></p>
+
+<hr>
 <hr>
 
 <h2>📄 PDF Processing & Knowledge Base</h2>
