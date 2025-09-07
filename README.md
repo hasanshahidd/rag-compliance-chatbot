@@ -2,64 +2,60 @@
 <pre class="project-structure"><code>
 rag_compliance_chatbot/
 ├── src/
-│   ├── pdf_processing/       # PDF extraction & chunking
-│   │   ├── extract_text.py   # Extracts text from PDFs (pdfplumber / PyPDF2 / OCR)
-│   │   ├── chunk_text.py     # Splits text into structured chunks
-│   ├── rag_pipeline/         # RAG pipeline & retrieval
-│   │   ├── embeddings.py     # Embeddings generation via SentenceTransformers
-│   │   ├── vector_store.py   # Builds FAISS index
-│   │   ├── query_engine.py   # Enhances query, retrieves chunks, generates response
-│   ├── compliance_analysis/  # Gap analysis & reporting
-│   │   ├── report_generator.py # Generates compliance gap reports
-│   ├── ui/                   # Streamlit UI
-│   │   ├── streamlit_app.py
+│   ├── pdf_processing/         # PDF extraction & chunking
+│   │   ├── extract_text.py     # Extracts text from PDFs (~81k words, pdfplumber / PyPDF2 / OCR)
+│   │   └── chunk_text.py       # Splits text into structured chunks (~26 large / ~162 small)
+│   ├── rag_pipeline/           # RAG retrieval & LLM integration
+│   │   ├── embeddings.py       # Embeddings via SentenceTransformers('multi-qa-MiniLM-L6-cos-v1')
+│   │   ├── vector_store.py     # Builds FAISS vector index
+│   │   └── query_engine.py     # Query enhancement & LLM response generation
+│   ├── compliance_analysis/    # Gap analysis & reporting
+│   │   ├── gap_analysis.py     # Compares chunks against PCI-DSS/ISO 27001
+│   │   └── report_generator.py # Generates gap_analysis_report.md
+│   └── ui/                     # Streamlit UI
+│       └── streamlit_app.py    # Query & report interface
 ├── data/
-│   ├── input/                # PDF input
-│   │   ├── information_security_policy_v4.0.pdf
-│   ├── knowledge_base/       # Indexed chunks
-│   │   ├── index.faiss        # FAISS vector index
+│   ├── input/                  # Input PDF
+│   │   └── information_security_policy_v4.0.pdf
+│   ├── knowledge_base/         # Indexed chunks
+│   │   ├── index.faiss
 │   │   ├── chunks_structured.json
-│   ├── mappings/             # Compliance mapping
-│   │   ├── compliance_mapping.json
-│   ├── reports/              # Generated gap reports
-│   │   ├── gap_analysis_report.md
-├── config/
-│   ├── config.yaml           # Pipeline settings (chunk size, models, etc.)
-│   ├── compliance_rules.json # Compliance rules mapping
-├── tests/
-│   ├── test_pdf_processing.py
-│   ├── test_rag_pipeline.py
-│   ├── test_compliance_analysis.py
+│   │   └── chunks.json          # legacy
+│   ├── mappings/               # Compliance mappings
+│   │   └── compliance_mapping.json
+│   └── reports/                # Generated reports
+│       └── gap_analysis_report.md
+├── docs/                       # Documentation
+│   ├── user_guide.md           # Instructions for end users
+│   └── developer_guide.md      # Setup, workflow, troubleshooting
 ├── requirements.txt
-├── .gitignore                # Exclude .env, logs, virtualenv
-└── README.md                 # This overview
+├── .gitignore                  # Exclude .env, logs, virtualenv
+└── README.md
 </code></pre>
 
 <hr>
 
 <h2>🚀 Project Overview</h2>
-
-<p><strong>RAG Compliance Chatbot</strong> is a Retrieval-Augmented Generation (RAG) system for analyzing text-based PDF policies (Information Security Policy v4.0) against <strong>PCI-DSS v3.2</strong> and <strong>ISO 27001:2013</strong>. It ingests PDFs, creates a knowledge base, retrieves relevant sections via semantic search, generates LLM-powered responses, and produces compliance gap reports.</p>
+<p><strong>RAG Compliance Chatbot</strong> is a fully hardcoded Retrieval-Augmented Generation system for analyzing text-based PDF policies (~81,000 words) against <strong>PCI-DSS v3.2</strong> and <strong>ISO 27001:2013</strong>. It ingests PDFs, creates a semantic knowledge base, retrieves relevant sections, generates LLM-powered answers, and produces compliance gap reports.</p>
 
 <ul>
-  <li>PDF ingestion & chunking (~81k characters → 251 structured chunks)</li>
+  <li>PDF ingestion & chunking (~26 large / ~162 small chunks)</li>
   <li>FAISS vector store for similarity search</li>
-  <li>Groq LLM (llama-3.1-8b-instant) with Hugging Face fallback</li>
-  <li>PCI-DSS & ISO 27001 compliance mapping</li>
-  <li>Compliance gap report generation</li>
-  <li>Streamlit UI for query and report display</li>
+  <li>LLM Integration: Groq (llama-3.1-8b-instant) with Hugging Face fallback (distilbert-base-uncased-distilled-squad)</li>
+  <li>PCI-DSS & ISO 27001 compliance mapping (hardcoded in scripts)</li>
+  <li>Gap analysis report generation (Markdown)</li>
+  <li>Streamlit UI for interactive queries & reports</li>
 </ul>
 
 <hr>
 
 <h2>⚙️ Setup & Installation</h2>
-
 <ol>
   <li><strong>Clone repository</strong>
     <pre><code>git clone https://github.com/your-org/rag_compliance_chatbot.git
 cd rag_compliance_chatbot</code></pre>
   </li>
-  <li><strong>Create virtual environment & activate</strong>
+  <li><strong>Create & activate virtual environment</strong>
     <pre><code>python -m venv venv
 # Windows
 venv\Scripts\activate
@@ -69,71 +65,58 @@ source venv/bin/activate</code></pre>
   <li><strong>Install dependencies</strong>
     <pre><code>pip install -r requirements.txt</code></pre>
   </li>
-  <li><strong>Configure environment variables</strong> in <code>.env</code> (excluded from Git):
+  <li><strong>Configure environment variables</strong> in <code>.env</code> (excluded from Git)
     <pre><code>GROQ_API_KEY=your_groq_api_key</code></pre>
-  </li>
-  <li><strong>Configure pipeline</strong> in <code>config/config.yaml</code>:
-    <pre><code>pdf_processing:
-  chunk_size: 500
-  embedding_model: 'sentence-transformers/all-MiniLM-L6-v2'
-llm:
-  model: 'distilbert-base-uncased'
-  groq_api_key_env: 'GROQ_API_KEY'
-vector_store:
-  index_path: 'data/knowledge_base/index.faiss'</code></pre>
   </li>
 </ol>
 
 <hr>
 
 <h2>📄 PDF Processing & Knowledge Base</h2>
-
 <ul>
-  <li>Input: <code>information_security_policy_v4.0.pdf</code> (~81k characters)</li>
-  <li>Extraction via <code>pdfplumber</code> / <code>PyPDF2</code> / OCR for scanned PDFs</li>
+  <li>Input: <code>information_security_policy_v4.0.pdf</code> (~81k words)</li>
+  <li>Extraction via <code>pdfplumber</code>, <code>PyPDF2</code>, OCR fallback</li>
   <li>Chunking:
     <ul>
-      <li>251 structured chunks (dictionary format: <code>{section, title, text}</code>)</li>
-      <li>Each chunk used for semantic retrieval</li>
+      <li>26 large chunks (~3115 words each) or 162 small chunks (~500 words)</li>
+      <li>Each chunk contains <code>{section, title, text}</code> for semantic retrieval</li>
     </ul>
   </li>
 </ul>
 
-<pre><code>Total chunks: 251
-1, Section 4.0: 68 words
-2, Section 0: 7 words
-3, Section 4.0: 18 words
-...</code></pre>
+<pre><code>Total chunks example:
+1, Section 4.0: 3115 words
+2, Section 4.1: 3050 words
+3, Section 4.2: 3120 words
+...
+</code></pre>
 
 <hr>
 
 <h2>💾 FAISS Vector Store</h2>
-
 <ul>
   <li>Embeddings: <code>SentenceTransformers('multi-qa-MiniLM-L6-cos-v1')</code></li>
-  <li>Semantic search with FAISS for top-K chunks</li>
-  <li>Deduplication ensures unique chunks in retrieval</li>
-  <li>Enhances RAG LLM query response quality</li>
+  <li>Semantic search for top-K relevant chunks</li>
+  <li>Deduplication ensures unique chunks for retrieval</li>
+  <li>Improves LLM query response quality</li>
 </ul>
 
 <hr>
 
 <h2>🤖 LLM Integration</h2>
-
 <ul>
   <li>Primary: Groq LLM (<code>llama-3.1-8b-instant</code>)</li>
   <li>Fallback: Hugging Face QA (<code>distilbert-base-uncased-distilled-squad</code>)</li>
-  <li>Query + retrieved chunks (truncated ~3000 tokens) → LLM generates concise, professional answers (100–150 words)</li>
-  <li>Inferred responses flagged with <code>[INFERRED]</code> if context insufficient</li>
+  <li>Top retrieved chunks (~3000 tokens) + query → LLM generates professional answers (100–150 words)</li>
+  <li>Inferred responses flagged with <code>[INFERRED]</code> if context is insufficient</li>
 </ul>
 
 <hr>
 
 <h2>📝 Compliance Gap Analysis</h2>
-
 <ul>
-  <li>Compares retrieved policy sections against PCI-DSS & ISO 27001</li>
-  <li>Generates Markdown report with:
+  <li>Compares retrieved sections to PCI-DSS & ISO 27001 mappings (hardcoded)</li>
+  <li>Generates <code>gap_analysis_report.md</code> including:
     <ul>
       <li>Compliance status</li>
       <li>Missing clauses</li>
@@ -146,53 +129,52 @@ vector_store:
 <hr>
 
 <h2>🖥️ Streamlit UI</h2>
-
 <ul>
-  <li>Query with policy questions (e.g., “What are the access control policies?”)</li>
-  <li>View responses + compliance gaps + audit priorities</li>
+  <li>Query PDF policies (e.g., “How are passwords managed?”)</li>
+  <li>View LLM answers + compliance gaps + audit priorities</li>
   <li>Export reports as Markdown</li>
   <li>Run: <code>streamlit run src/ui/streamlit_app.py</code></li>
 </ul>
 
 <hr>
 
-<h2>🔧 Testing & Verification</h2>
-
-<pre><code>pytest tests/unit/
-pytest tests/integration/</code></pre>
+<h2>📚 Documentation (docs/)</h2>
+<ul>
+  <li><code>user_guide.md</code> — Instructions for end users on querying and exporting reports</li>
+  <li><code>developer_guide.md</code> — Setup, workflow, troubleshooting, updated for hardcoded scripts</li>
+</ul>
 
 <hr>
 
 <h2>🚫 Files to Exclude (.gitignore)</h2>
-
 <pre><code>.env
 venv/
 *.pyc
 __pycache__/
 data/reports/*
+data/knowledge_base/
+data/input/*.pdf
 pipeline.log
 </code></pre>
 
 <hr>
 
 <h2>🔐 Security & Privacy</h2>
-
 <ul>
-  <li>Environment variables store API keys (.env)</li>
-  <li>User PDF data is processed locally; no sensitive data persisted</li>
-  <li>Logs redact sensitive info</li>
+  <li>Store API keys in <code>.env</code>, never commit</li>
+  <li>User PDF data processed locally; no sensitive data persisted</li>
+  <li>Logs redact sensitive information</li>
 </ul>
 
 <hr>
 
 <h2>📈 Performance & Roadmap</h2>
-
 <ul>
-  <li>Chunking + FAISS + LLM allows fast semantic retrieval</li>
+  <li>Chunking + FAISS + LLM enables < 5s semantic retrieval</li>
   <li>Future improvements:
     <ul>
       <li>Multi-PDF ingestion</li>
-      <li>Interactive PDF/Excel exports</li>
+      <li>Interactive PDF/Excel export</li>
       <li>Fine-tuned compliance LLM</li>
       <li>Enhanced UI/UX with HTML/CSS</li>
     </ul>
@@ -202,5 +184,4 @@ pipeline.log
 <hr>
 
 <h2>🙏 Acknowledgments</h2>
-
 <p>Built with pdfplumber, PyPDF2, Tesseract OCR, SentenceTransformers, FAISS, Groq, Hugging Face, LangChain, Streamlit.</p>
