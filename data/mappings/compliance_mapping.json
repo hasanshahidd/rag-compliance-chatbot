@@ -1,0 +1,230 @@
+{
+  "mappings": [
+    {
+      "policy_section": "4.4 Access Control",
+      "pci_dss": [
+        {
+          "clause": "8.1.6",
+          "description": "Limit repeated access attempts by locking out the user ID after not more than six attempts.",
+          "compliance_status": "Partial",
+          "notes": "Policy specifies lockout after 6 attempts, but no mention of minimum lockout duration (30 minutes required)."
+        },
+        {
+          "clause": "8.1.7",
+          "description": "Set lockout duration to a minimum of 30 minutes or until an administrator enables the account.",
+          "compliance_status": "Non-Compliant",
+          "notes": "Policy does not specify a 30-minute lockout duration."
+        },
+        {
+          "clause": "12.8.1",
+          "description": "Maintain a list of service providers with whom cardholder data is shared.",
+          "compliance_status": "Compliant",
+          "notes": "Policy requires maintaining a list of service providers."
+        }
+      ],
+      "iso_27001": [
+        {
+          "clause": "A.9.4.2",
+          "description": "Secure authentication procedures to control access to information systems.",
+          "compliance_status": "Compliant",
+          "notes": "Policy enforces role-based access and password complexity."
+        },
+        {
+          "clause": "A.9.4.4",
+          "description": "Use of privileged utility programs restricted and monitored.",
+          "compliance_status": "Partial",
+          "notes": "Policy mentions monitoring privileged accounts but lacks specific monitoring procedures."
+        }
+      ]
+    },
+    {
+      "policy_section": "4.34 Encryption",
+      "pci_dss": [
+        {
+          "clause": "3.5.4",
+          "description": "Store cryptographic keys in the fewest possible locations.",
+          "compliance_status": "Compliant",
+          "notes": "Policy specifies secure key storage with dual control."
+        },
+        {
+          "clause": "3.6.4",
+          "description": "Periodic cryptographic key changes as per defined cryptoperiod.",
+          "compliance_status": "Non-Compliant",
+          "notes": "Policy mentions key changes but does not define a specific cryptoperiod."
+        }
+      ],
+      "iso_27001": [
+        {
+          "clause": "A.10.1.1",
+          "description": "Policy on the use of cryptographic controls.",
+          "compliance_status": "Compliant",
+          "notes": "Policy includes encryption for sensitive data at-rest and in-transit."
+        }
+      ]
+    },
+    {
+      "policy_section": "4.16 Vulnerability Management",
+      "pci_dss": [
+        {
+          "clause": "11.2",
+          "description": "Run internal and external vulnerability scans at least quarterly.",
+          "compliance_status": "Partial",
+          "notes": "Policy requires annual scans, not quarterly for external scans."
+        }
+      ],
+      "iso_27001": [
+        {
+          "clause": "A.12.6.1",
+          "description": "Management of technical vulnerabilities.",
+          "compliance_status": "Compliant",
+          "notes": "Policy includes vulnerability assessments and risk ranking."
+        }
+      ]
+    },
+    {
+      "policy_section": "4.33 Security Incident Management",
+      "pci_dss": [
+        {
+          "clause": "12.10",
+          "description": "Implement an incident response plan.",
+          "compliance_status": "Compliant",
+          "notes": "Policy includes an incident response plan and reporting to senior management."
+        }
+      ],
+      "iso_27001": [
+        {
+          "clause": "A.16.1",
+          "description": "Management of information security incidents.",
+          "compliance_status": "Compliant",
+          "notes": "Policy requires incident reporting and root cause analysis."
+        }
+      ]
+    },
+    {
+      "policy_section": "4.5 Password Management",
+      "pci_dss": [
+        {
+          "clause": "8.2.3",
+          "description": "Passwords must be changed at least every 90 days.",
+          "compliance_status": "Partial",
+          "notes": "Policy mentions password rotation but not the specific interval."
+        },
+        {
+          "clause": "8.2.4",
+          "description": "Password complexity requirements (uppercase, lowercase, number, special character).",
+          "compliance_status": "Partial",
+          "notes": "Policy requires strong passwords but lacks enforcement details."
+        },
+        {
+          "clause": "8.3",
+          "description": "Multi-factor authentication for sensitive transactions.",
+          "compliance_status": "Non-Compliant",
+          "notes": "Policy does not explicitly require MFA."
+        }
+      ],
+      "iso_27001": [
+        {
+          "clause": "A.9.2.4",
+          "description": "Management of secret authentication information.",
+          "compliance_status": "Partial",
+          "notes": "Policy enforces passwords but lacks detailed MFA or rotation procedures."
+        }
+      ]
+    },
+    {
+      "policy_section": "4.12 Logging and Monitoring",
+      "pci_dss": [
+        {
+          "clause": "10.2",
+          "description": "Implement audit trails to reconstruct events.",
+          "compliance_status": "Partial",
+          "notes": "Policy mentions logging but does not cover all critical systems."
+        }
+      ],
+      "iso_27001": [
+        {
+          "clause": "A.12.4",
+          "description": "Logging and monitoring of information processing facilities.",
+          "compliance_status": "Partial",
+          "notes": "Policy references monitoring but lacks specific logging procedures."
+        }
+      ]
+    },
+    {
+      "policy_section": "4.20 Data Retention",
+      "pci_dss": [
+        {
+          "clause": "3.1",
+          "description": "Retain cardholder data only as long as necessary.",
+          "compliance_status": "Non-Compliant",
+          "notes": "Policy does not define retention periods."
+        }
+      ],
+      "iso_27001": [
+        {
+          "clause": "A.18.1.3",
+          "description": "Protection of records.",
+          "compliance_status": "Partial",
+          "notes": "Policy mentions confidentiality but no specific retention schedule."
+        }
+      ]
+    },
+    {
+      "policy_section": "4.29 Supplier Risk Management",
+      "pci_dss": [
+        {
+          "clause": "12.8",
+          "description": "Maintain service provider agreements that address security requirements.",
+          "compliance_status": "Partial",
+          "notes": "Policy mentions consulting external parties but lacks formal supplier risk process."
+        }
+      ],
+      "iso_27001": [
+        {
+          "clause": "A.15.1",
+          "description": "Information security in supplier relationships.",
+          "compliance_status": "Partial",
+          "notes": "Policy references supplier oversight but no formal ISMS integration."
+        }
+      ]
+    },
+    {
+      "policy_section": "4.7 Physical Security",
+      "pci_dss": [
+        {
+          "clause": "9.1",
+          "description": "Secure areas to protect cardholder data.",
+          "compliance_status": "Partial",
+          "notes": "Policy mentions awareness for employees but no physical controls defined."
+        }
+      ],
+      "iso_27001": [
+        {
+          "clause": "A.11",
+          "description": "Physical and environmental security.",
+          "compliance_status": "Partial",
+          "notes": "Policy mentions employee awareness but lacks specific physical controls."
+        }
+      ]
+    },
+    {
+      "policy_section": "4.25 Business Continuity",
+      "pci_dss": [
+        {
+          "clause": "12.10.3",
+          "description": "Test incident response and business continuity plans regularly.",
+          "compliance_status": "Non-Compliant",
+          "notes": "Policy focuses on email security; no business continuity plan is defined."
+        }
+      ],
+      "iso_27001": [
+        {
+          "clause": "A.17",
+          "description": "Information security aspects of business continuity management.",
+          "compliance_status": "Non-Compliant",
+          "notes": "Policy mentions some controls but no formal BC plan or DR procedures."
+        }
+      ]
+    }
+  ]
+}
