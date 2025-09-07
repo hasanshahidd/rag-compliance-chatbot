@@ -49,29 +49,6 @@ rag_compliance_chatbot/
 
 <hr>
 
-<h2>⚙️ Setup & Installation</h2>
-<ol>
-  <li><strong>Clone repository</strong>
-    <pre><code>git clone https://github.com/your-org/rag_compliance_chatbot.git
-cd rag_compliance_chatbot</code></pre>
-  </li>
-  <li><strong>Create & activate virtual environment</strong>
-    <pre><code>python -m venv venv
-# Windows
-venv\Scripts\activate
-# Linux/macOS
-source venv/bin/activate</code></pre>
-  </li>
-  <li><strong>Install dependencies</strong>
-    <pre><code>pip install -r requirements.txt</code></pre>
-  </li>
-  <li><strong>Configure environment variables</strong> in <code>.env</code> (excluded from Git)
-    <pre><code>GROQ_API_KEY=your_groq_api_key</code></pre>
-  </li>
-</ol>
-
-<hr>
-
 <h2>📄 PDF Processing & Knowledge Base</h2>
 <ul>
   <li>Input: <code>information_security_policy_v4.0.pdf</code> (~81k words)</li>
@@ -84,11 +61,19 @@ source venv/bin/activate</code></pre>
   </li>
 </ul>
 
-<pre><code>Total chunks example:
-1, Section 4.0: 3115 words
-2, Section 4.1: 3050 words
-3, Section 4.2: 3120 words
-...
+<pre><code>Total chunks: 251
+  1, Section 4.0: 68 words
+  2, Section 0: 7 words
+  3, Section 4.0: 18 words
+  4, Section 03: 11 words
+  5, Section 2014: 7 words
+  6, Section 4.5: 62 words
+  7, Section 4.6: 45 words
+  8, Section 4.7: 77 words
+  9, Section 4.8: 39 words
+  10, Section 4.9: 52 words
+  ...
+  251, Section 5.9: 31 words
 </code></pre>
 
 <hr>
