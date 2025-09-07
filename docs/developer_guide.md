@@ -1,67 +1,118 @@
-Developer Guide for RAG Compliance Chatbot
-Overview
-The RAG Compliance Chatbot is a Python-based project designed to ingest text-based PDF policy documents, create a structured knowledge base, perform semantic searches, and generate compliance gap analysis reports for PCI-DSS v3.2 and ISO 27001:2013 standards. It uses a Retrieval-Augmented Generation (RAG) pipeline with FAISS for vector search, SentenceTransformers for embeddings, Groq's llama-3.1-8b-instant for LLM responses, and Hugging Face's distilbert-base-uncased-distilled-squad as a fallback. The project includes a Streamlit UI for querying and displaying reports, with all components in the provided structure.
-Project Structure
+<h2>🛠️ Developer Guide: RAG Compliance Chatbot</h2>
 
-requirements.txt: Dependencies (e.g., pdfplumber, sentence-transformers, langchain-groq).
-.gitignore: Excludes .env, data/knowledge_base/, venv/, etc.
-README.md: Project overview (generated below).
-src/pdf_processing/: PDF extraction and chunking.
-extract_text.py: Extracts text from PDF using pdfplumber/PyPDF2/OCR fallback.
-chunk_text.py: Splits text into chunks (~500 words) with metadata (section, title).
+<h3>Overview</h3>
+<p>The <strong>RAG Compliance Chatbot</strong> is a Python-based system that ingests text-based PDF policy documents, creates a structured knowledge base, performs semantic searches, and generates compliance gap reports for <strong>PCI-DSS v3.2</strong> and <strong>ISO 27001:2013</strong> standards. It uses a Retrieval-Augmented Generation (RAG) pipeline with:</p>
 
+<ul>
+  <li>FAISS for vector search</li>
+  <li>SentenceTransformers for embeddings</li>
+  <li>Groq LLM (<code>llama-3.1-8b-instant</code>) for responses</li>
+  <li>Hugging Face fallback (<code>distilbert-base-uncased-distilled-squad</code>)</li>
+  <li>Streamlit UI for querying and report visualization</li>
+</ul>
 
-src/rag_pipeline/: RAG core.
-embeddings.py: Generates embeddings using SentenceTransformer.
-vector_store.py: Builds FAISS index from chunks.
-query_engine.py: Enhances queries, retrieves chunks, generates responses with Groq/Hugging Face.
+<p>All configuration and compliance rules are now fully <strong>hardcoded</strong> in the scripts.</p>
 
+<hr>
 
-src/compliance_analysis/: Gap analysis and reporting.
-mapping.py: Loads compliance_mapping.json (manual in Day 1, optional automation).
-report_generator.py: Generates gap_analysis_report.md with queries, status, gaps.
+<h3>Project Structure</h3>
+<pre class="project-structure"><code>
+rag_compliance_chatbot/
+├── src/pdf_processing/
+│   ├── extract_text.py     # Extracts text from PDFs (pdfplumber/PyPDF2/OCR fallback)
+│   └── chunk_text.py       # Splits text into structured chunks (~26 large / ~162 small)
+├── src/rag_pipeline/
+│   ├── embeddings.py       # Embeddings generation (SentenceTransformers)
+│   ├── vector_store.py     # Builds FAISS index
+│   └── query_engine.py     # Enhances queries, retrieves chunks, generates responses (Groq/Hugging Face)
+├── src/compliance_analysis/
+│   ├── gap_analysis.py     # Compares retrieved chunks to PCI-DSS/ISO 27001 mappings
+│   └── report_generator.py # Generates <code>gap_analysis_report.md</code>
+├── src/ui/
+│   └── streamlit_app.py    # Streamlit interface for queries and report display
+├── data/
+│   ├── input/              # Input PDF(s)
+│   │   └── information_security_policy_v4.0.pdf
+│   ├── knowledge_base/     # Indexed chunks
+│   │   ├── index.faiss
+│   │   ├── chunks_structured.json
+│   │   └── chunks.json      # legacy
+│   ├── mappings/
+│   │   └── compliance_mapping.json
+│   └── reports/
+│       └── gap_analysis_report.md
+├── docs/
+│   ├── user_guide.md
+│   └── developer_guide.md
+├── requirements.txt
+├── .gitignore
+└── README.md
+</code></pre>
 
+<hr>
 
-src/ui/: Minimal UI.
-streamlit_app.py: Streamlit interface for querying and report display.
+<h3>Setup & Installation</h3>
+<ol>
+  <li><strong>Clone repository:</strong>
+    <pre><code>git clone &lt;repo-url&gt;
+cd rag_compliance_chatbot</code></pre>
+  </li>
+  <li><strong>Create virtual environment & activate:</strong>
+    <pre><code>python -m venv venv
+# Windows
+venv\Scripts\activate
+# Linux/macOS
+source venv/bin/activate</code></pre>
+  </li>
+  <li><strong>Install dependencies:</strong>
+    <pre><code>pip install -r requirements.txt</code></pre>
+  </li>
+  <li><strong>Configure environment variables (.env):</strong>
+    <pre><code>GROQ_API_KEY=your_groq_api_key</code></pre>
+  </li>
+  <li><strong>Run pipeline:</strong>
+    <pre><code>python src/pdf_processing/extract_text.py
+python src/pdf_processing/chunk_text.py
+python src/rag_pipeline/vector_store.py</code></pre>
+  </li>
+  <li><strong>Generate report:</strong>
+    <pre><code>python -m src.compliance_analysis.report_generator</code></pre>
+  </li>
+  <li><strong>Run UI:</strong>
+    <pre><code>streamlit run src/ui/streamlit_app.py</code></pre>
+  </li>
+</ol>
 
+<hr>
 
-data/input/: PDF input (e.g., information_security_policy_v4.0.pdf).
-data/knowledge_base/: Indexed chunks ( index.faiss, chunks_structured.json).
-data/mappings/: compliance_mapping.json for PCI-DSS/ISO 27001 mappings.
-data/reports/: gap_analysis_report.md output.
-docs/: Guides (user/developer).
-tests/: Unit tests (optional, not covered).
-config/: config.yaml (chunk size, etc.), compliance_rules.json (rules).
+<h3>Development Workflow</h3>
+<ul>
+  <li><strong>PDF Ingestion:</strong> extract_text.py extracts text (OCR fallback for scanned PDFs). chunk_text.py splits into structured chunks with metadata (<code>section, title, text</code>).</li>
+  <li><strong>Knowledge Base:</strong> vector_store.py generates embeddings and FAISS index (~26 large / 162 small chunks).</li>
+  <li><strong>Querying:</strong> query_engine.py enhances queries, retrieves top-K relevant chunks, uses Groq LLM for responses with Hugging Face fallback.</li>
+  <li><strong>Report Generation:</strong> report_generator.py queries predefined topics, analyzes gaps using compliance_mapping.json, assigns risk levels, outputs Markdown report.</li>
+  <li><strong>UI:</strong> streamlit_app.py provides input, query history, response display, and report viewer.</li>
+</ul>
 
-Setup and Installation
+<hr>
 
-Clone the repository: git clone <repo-url>.
-Create virtual environment: python -m venv venv; venv\Scripts\activate.
-Install dependencies: pip install -r requirements.txt.
-Add .env: GROQ_API_KEY=your_key.
-Run Day 2 pipeline: python src\pdf_processing\extract_text.py, chunk_text.py, src\rag_pipeline\vector_store.py.
-Generate report: python -m src.compliance_analysis.report_generator.
-Run UI: streamlit run src\ui\streamlit_app.py.
+<h3>Troubleshooting Retrieval Issues</h3>
+<ul>
+  <li><strong>Incorrect sections:</strong> e.g., encryption returned as 4.22 instead of 4.34. Verify <code>chunks_structured.json</code> using:
+    <pre><code>findstr /C:"4.34" data\knowledge_base\chunks_structured.json</code></pre>
+  </li>
+  <li><strong>Debug:</strong> Log retrieved chunks in query_engine.py. Test retrieval with:
+    <pre><code>python -c "from src.rag_pipeline.query_engine import retrieve_chunks; print(retrieve_chunks('How does the policy address encryption?', 'data/knowledge_base/index.faiss', 'data/knowledge_base/chunks_structured.json', top_k=3))"</code></pre>
+  </li>
+  <li><strong>Enhancement:</strong> Add more mappings to compliance_mapping.json for new queries (e.g., 4.5 for password management).</li>
+</ul>
 
-Development Workflow
+<hr>
 
-PDF Ingestion: Run extract_text.py for text extraction (supports OCR for scanned PDFs). chunk_text.py splits into 26 chunks with section metadata.
-Knowledge Base: vector_store.py generates embeddings (multi-qa-MiniLM-L6-cos-v1) and FAISS index.
-Querying: query_engine.py enhances queries (keywords/sections), retrieves chunks, uses Groq for responses, Hugging Face fallback.
-Report: report_generator.py queries predefined topics, analyzes gaps using compliance_mapping.json, assigns risks, generates Markdown report.
-UI: streamlit_app.py provides input, history, response display, report viewer.
-
-Troubleshooting Retrieval Issues
-
-Issue: Incorrect sections (e.g., 4.22 for encryption instead of 4.34).
-Fix: Verify chunks_structured.json for sections using findstr /C:"4.34" data\knowledge_base\chunks_structured.json. Re-run Day 2 if missing.
-Debug: Log retrieved sections in query_engine.py (already included). Test with python -c "from src.rag_pipeline.query_engine import retrieve_chunks; print(retrieve_chunks('How does the policy address encryption?', 'data/knowledge_base/index.faiss', 'data/knowledge_base/chunks_structured.json', top_k=3))".
-Enhancement: Add more mappings to compliance_mapping.json for new queries (e.g., 4.5 for password management).
-
-Maintenance
-
-Update compliance_mapping.json for new standards.
-Re-run Day 2 for new PDFs.
-Monitor Groq API credits; fallback to Hugging Face if needed.
-Expand UI for advanced features (e.g., file upload for new PDFs).
+<h3>Maintenance</h3>
+<ul>
+  <li>Update <code>compliance_mapping.json</code> for new standards or clauses.</li>
+  <li>Re-run the pipeline for new PDFs (extract → chunk → index → report).</li>
+  <li>Monitor Groq API usage; fallback to Hugging Face when necessary.</li>
+  <li>Expand UI for advanced features (file upload for new PDFs, filtering, or export options).</li>
+</ul>
