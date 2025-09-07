@@ -1,0 +1,17 @@
+# Python
+*.pyc
+__pycache__/
+*.pyo
+*.pyd
+.Python
+*.ipynb_checkpoints
+# Virtual environment
+.venv/
+venv/
+env/
+# Data files
+data/knowledge_base/
+data/reports/
+# IDE
+.idea/
+*.swp
