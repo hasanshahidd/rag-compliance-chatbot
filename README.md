@@ -3,7 +3,7 @@
 rag_compliance_chatbot/
 ├── src/
 │   ├── pdf_processing/         # PDF extraction & chunking
-│   │   ├── extract_text.py     # Extracts text from PDFs (~81k words, pdfplumber / PyPDF2 / OCR)
+│   │   ├── extract_text.py     # Extracts text from PDFs (~81k words, pdfplumber / PyPDF2 )
 │   │   └── chunk_text.py       # Splits text into structured chunks (~26 large / ~162 small)
 │   ├── rag_pipeline/           # RAG retrieval & LLM integration
 │   │   ├── embeddings.py       # Embeddings via SentenceTransformers('multi-qa-MiniLM-L6-cos-v1')
@@ -62,7 +62,7 @@ rag_compliance_chatbot/
 <h2>📄 PDF Processing & Knowledge Base</h2>
 <ul>
   <li>Input: <code>information_security_policy_v4.0.pdf</code> (~81k words)</li>
-  <li>Extraction via <code>pdfplumber</code>, <code>PyPDF2</code>, OCR fallback</li>
+  <li>Extraction via <code>pdfplumber</code>, <code>PyPDF2</code>, </li>
   <li>Chunking:
     <ul>
       <li>26 large chunks (~3115 words each) or 162 small chunks (~500 words)</li>
